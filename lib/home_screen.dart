@@ -16,17 +16,41 @@ class HomeScreen extends StatelessWidget {
                 'Dice Breaker',
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
-
               const SizedBox(height: 32),
-              OutlinedButton(
-                onPressed: () => Navigator.pushNamed(context, '/game'),
-                child: const Text('Start'),
+              SizedBox(
+                width: double.infinity,
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pushNamed(context, '/game'),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    backgroundColor: Colors.redAccent,
+                  ),
+                  child: const Text(
+                    'Start',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
               ),
-              
-              const SizedBox(height: 12),
-              OutlinedButton(
-                onPressed: () => Navigator.maybePop(context),
-                child: const Text('Exit App'),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.maybePop(context),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    backgroundColor: Colors.grey[800],
+                  ),
+                  child: const Text(
+                    'Exit App',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
               ),
             ],
           ),
