@@ -1,3 +1,4 @@
+HEAD
 # dice_crusher
 
 A new Flutter project.
@@ -15,3 +16,5 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+# MobileCraft_Project1
+c7cb74eee5b0b7604f30dc3f1a403e72ff511011
