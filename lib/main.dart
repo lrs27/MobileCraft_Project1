@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
-import 'restaurant_details.dart';
+import 'home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,13 +20,7 @@ class CampusCraveApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Campus Crave',
       theme: ThemeData.dark(),
-      home: RestaurantDetailsScreen(
-        name: 'Campus Cafe',
-        imageUrl: 'https://picsum.photos/600/300',
-        price: '\$\$',
-        distance: '0.4 mi',
-        hours: '9:00 AM - 8:00 PM',
-      ),
+      home: const HomeScreen(),
     );
   }
 }
