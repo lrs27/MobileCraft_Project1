@@ -251,12 +251,21 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       // ---------------- FLOATING BUTTON ----------------
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // TODO: Navigate to Meal Match screen
-        },
-        icon: const Icon(Icons.auto_awesome),
-        label: const Text("Meal Match"),
+     floatingActionButton: FloatingActionButton.extended(
+  onPressed: () async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AddEditRestaurantScreen(),
+      ),
+    );
+
+    if (result == true) {
+      loadRestaurants();
+    }
+  },
+  icon: const Icon(Icons.add),
+  label: const Text("Add Restaurant"),
       ),
     );
   }
