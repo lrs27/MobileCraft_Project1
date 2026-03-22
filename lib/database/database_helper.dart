@@ -27,14 +27,13 @@ class DatabaseHelper {
   Future _createDB(Database db, int version) async {
     // Restaurants table
     await db.execute('''
-      CREATE TABLE restaurants (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        cuisine TEXT NOT NULL,
-        priceLevel INTEGER NOT NULL,
-        distance REAL,
-        hours TEXT,
-        imageUrl TEXT
+CREATE TABLE restaurants(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  cuisine TEXT,
+  priceLevel INTEGER,
+  hours TEXT,
+  isFavorite INTEGER DEFAULT 0
       )
     ''');
 
