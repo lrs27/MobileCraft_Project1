@@ -99,9 +99,27 @@ class RestaurantDetailsScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
-                      onPressed: () {
-                        // TODO: Add to favorites logic
-                      },
+                      SizedBox(
+  width: double.infinity,
+  child: FilledButton.icon(
+    onPressed: () async {
+      final db = await DatabaseHelper.instance.database;
+
+      await db.update(
+        'restaurants',
+        {'isFavorite': 1},
+        where: 'name = ?',
+        whereArgs: [name],
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Added to favorites")),
+      );
+    },
+    icon: const Icon(Icons.favorite_border),
+    label: const Text("Add to Favorites"),
+  ),
+),
                       icon: const Icon(Icons.favorite_border),
                       label: const Text("Add to Favorites"),
                     ),
