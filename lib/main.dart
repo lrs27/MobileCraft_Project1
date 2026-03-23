@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
-import 'home_screen.dart';
+import 'onboarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,7 @@ class CampusCraveApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Campus Crave',
       theme: ThemeData.dark(),
-      home: const HomeScreen(),
+      home: const OnboardingScreen(),
     );
   }
 }

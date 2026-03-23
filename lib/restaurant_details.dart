@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'database/database_helper.dart';
 
 class RestaurantDetailsScreen extends StatelessWidget {
   final String name;
@@ -15,6 +16,38 @@ class RestaurantDetailsScreen extends StatelessWidget {
     required this.distance,
     required this.hours,
   });
+
+  Future<void> addToFavorites(BuildContext context) async {
+    final db = await DatabaseHelper.instance.database;
+
+    // Find restaurant ID
+    final result = await db.query(
+      'restaurants',
+      where: 'name = ?',
+      whereArgs: [name],
+      limit: 1,
+    );
+
+    if (result.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Restaurant not found in database")),
+      );
+      return;
+    }
+
+    final restaurantId = result.first['id'];
+
+    // Insert into favorites table
+    await db.insert('favorites', {
+      'restaurantId': restaurantId,
+      'emoji': null,
+      'note': null,
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Added to favorites")),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,27 +132,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
-                      SizedBox(
-  width: double.infinity,
-  child: FilledButton.icon(
-    onPressed: () async {
-      final db = await DatabaseHelper.instance.database;
-
-      await db.update(
-        'restaurants',
-        {'isFavorite': 1},
-        where: 'name = ?',
-        whereArgs: [name],
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Added to favorites")),
-      );
-    },
-    icon: const Icon(Icons.favorite_border),
-    label: const Text("Add to Favorites"),
-  ),
-),
+                      onPressed: () => addToFavorites(context),
                       icon: const Icon(Icons.favorite_border),
                       label: const Text("Add to Favorites"),
                     ),

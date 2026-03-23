@@ -1,6 +1,6 @@
-import 'add_edit_restaurant_screen.dart';
 import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
+import 'add_edit_restauraunt_screen.dart';
 import 'restaurant_details.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,13 +23,13 @@ class _HomeScreenState extends State<HomeScreen> {
   bool openNow = false;
 
   final List<String> cuisines = [
-    "All",
-    "American",
-    "Mexican",
-    "Italian",
-    "Asian",
-    "Cafe",
-    "Mediterranean",
+    'All',
+     'Pizza',
+    'Chinese',
+    'Mexican',
+    'American',
+    'Indian',
+    'Cafe',
   ];
 
   @override
