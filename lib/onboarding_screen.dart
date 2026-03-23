@@ -16,7 +16,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     'Chinese',
     'Mexican',
     'American',
-    'Indian'
+    'Indian',
+    'Cafe', 
   ];
 
   List<String> selectedCuisines = [];

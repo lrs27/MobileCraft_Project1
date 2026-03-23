@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
 import 'add_edit_restauraunt_screen.dart';
 import 'restaurant_details.dart';
+import 'favorites_screen.dart';
+import 'weekly_budget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,17 +16,20 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> restaurants = [];
   List<Map<String, dynamic>> filteredRestaurants = [];
 
+  double weeklyBudget = 0.0;
+  double weeklySpent = 0.0;
+
   bool isLoading = true;
 
   // Filters
   String searchQuery = "";
   String selectedCuisine = "All";
-  int selectedPrice = 0; // 0 = All
+  int selectedPrice = 0;
   bool openNow = false;
 
   final List<String> cuisines = [
     'All',
-     'Pizza',
+    'Pizza',
     'Chinese',
     'Mexican',
     'American',
@@ -35,9 +40,48 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    loadRestaurants();
+    loadAllData();
   }
 
+  Future<void> loadAllData() async {
+    await loadWeeklyBudget();
+    await loadWeeklySpending();
+    await loadRestaurants();
+  }
+
+  // ------------------ LOAD WEEKLY BUDGET ------------------
+  Future<void> loadWeeklyBudget() async {
+    final db = await DatabaseHelper.instance.database;
+
+    final settings = await db.query('settings', limit: 1);
+
+    if (settings.isNotEmpty) {
+      weeklyBudget = (settings.first['weeklyBudget'] as num).toDouble();
+    }
+  }
+
+  // ------------------ LOAD WEEKLY SPENDING ------------------
+  Future<void> loadWeeklySpending() async {
+    final db = await DatabaseHelper.instance.database;
+
+    final now = DateTime.now();
+    final weekStart = now.subtract(Duration(days: now.weekday - 1));
+    final weekStartString = weekStart.toIso8601String();
+
+    final logs = await db.rawQuery('''
+      SELECT price FROM meal_logs
+      WHERE date >= ?
+    ''', [weekStartString]);
+
+    double total = 0.0;
+    for (var log in logs) {
+      total += (log['price'] as num).toDouble();
+    }
+
+    weeklySpent = total;
+  }
+
+  // ------------------ LOAD RESTAURANTS ------------------
   Future<void> loadRestaurants() async {
     final db = await DatabaseHelper.instance.database;
     final data = await db.query('restaurants');
@@ -49,10 +93,10 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // ------------------ APPLY FILTERS ------------------
   void applyFilters() {
     List<Map<String, dynamic>> results = restaurants;
 
-    // Search filter
     if (searchQuery.isNotEmpty) {
       results = results
           .where((r) =>
@@ -60,21 +104,14 @@ class _HomeScreenState extends State<HomeScreen> {
           .toList();
     }
 
-    // Cuisine filter
     if (selectedCuisine != "All") {
-      results = results
-          .where((r) => r['cuisine'] == selectedCuisine)
-          .toList();
+      results = results.where((r) => r['cuisine'] == selectedCuisine).toList();
     }
 
-    // Price filter
     if (selectedPrice != 0) {
-      results = results
-          .where((r) => r['priceLevel'] == selectedPrice)
-          .toList();
+      results = results.where((r) => r['priceLevel'] == selectedPrice).toList();
     }
 
-    // Open Now filter (simple placeholder logic)
     if (openNow) {
       results = results
           .where((r) => (r['hours'] ?? "").contains("AM"))
@@ -88,14 +125,86 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double remaining = weeklyBudget - weeklySpent;
+    double progress = weeklyBudget == 0
+        ? 0
+        : (weeklySpent / weeklyBudget).clamp(0.0, 1.0);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Campus Crave"),
         centerTitle: true,
+        actions: [
+          // FAVORITES BUTTON
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const FavoritesScreen()),
+              );
+            },
+          ),
+
+          // WEEKLY BUDGET BUTTON
+          IconButton(
+            icon: const Icon(Icons.account_balance_wallet),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const WeeklyBudgetScreen()),
+              );
+            },
+          ),
+        ],
       ),
 
       body: Column(
         children: [
+
+          // ---------------- WEEKLY BUDGET CARD ----------------
+          if (weeklyBudget > 0)
+            Container(
+              margin: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade900,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Weekly Budget",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+
+                  LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 10,
+                    backgroundColor: Colors.grey.shade800,
+                    color: progress >= 1 ? Colors.red : Colors.green,
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Text(
+                    "Spent: \$${weeklySpent.toStringAsFixed(2)} / \$${weeklyBudget.toStringAsFixed(0)}",
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                  Text(
+                    remaining >= 0
+                        ? "Remaining: \$${remaining.toStringAsFixed(2)}"
+                        : "Over budget by \$${remaining.abs().toStringAsFixed(2)}",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: remaining >= 0 ? Colors.green : Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
           // ---------------- SEARCH BAR ----------------
           Padding(
@@ -124,7 +233,6 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               children: [
-                // Cuisine filter
                 DropdownButton<String>(
                   value: selectedCuisine,
                   dropdownColor: Colors.black,
@@ -141,7 +249,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(width: 12),
 
-                // Price filter
                 FilterChip(
                   label: const Text("\$"),
                   selected: selectedPrice == 1,
@@ -172,7 +279,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(width: 12),
 
-                // Open Now filter
                 FilterChip(
                   label: const Text("Open Now"),
                   selected: openNow,
@@ -250,22 +356,43 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-      // ---------------- FLOATING BUTTON ----------------
-     floatingActionButton: FloatingActionButton.extended(
-  onPressed: () async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const AddEditRestaurantScreen(),
-      ),
-    );
+      // ---------------- FLOATING BUTTONS ----------------
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
 
-    if (result == true) {
-      loadRestaurants();
-    }
-  },
-  icon: const Icon(Icons.add),
-  label: const Text("Add Restaurant"),
+          FloatingActionButton(
+            heroTag: "ai_button",
+            backgroundColor: Colors.deepPurple,
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("AI Assistant Coming Soon")),
+              );
+            },
+            child: const Icon(Icons.auto_awesome),
+          ),
+
+          const SizedBox(height: 12),
+
+          FloatingActionButton.extended(
+            heroTag: "add_restaurant_button",
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const AddEditRestaurantScreen(),
+                ),
+              );
+
+              if (result == true) {
+                loadAllData();
+              }
+            },
+            icon: const Icon(Icons.add),
+            label: const Text("Add Restaurant"),
+          ),
+        ],
       ),
     );
   }
