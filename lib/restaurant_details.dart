@@ -68,7 +68,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
               child: Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
+                errorBuilder: (_, _, _) => Container(
                   color: Colors.grey.shade800,
                   child: const Icon(Icons.restaurant, size: 80),
                 ),

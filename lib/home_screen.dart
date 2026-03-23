@@ -4,6 +4,8 @@ import 'add_edit_restauraunt_screen.dart';
 import 'restaurant_details.dart';
 import 'favorites_screen.dart';
 import 'weekly_budget.dart';
+import 'add_review_screen.dart';
+import 'ai.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -320,7 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: 60,
                                   height: 60,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Container(
+                                  errorBuilder: (_, _, _) => Container(
                                     width: 60,
                                     height: 60,
                                     color: Colors.grey.shade800,
@@ -332,7 +334,28 @@ class _HomeScreenState extends State<HomeScreen> {
                               subtitle: Text(
                                 "${r['cuisine']} • ${"\$" * (r['priceLevel'] ?? 1)}",
                               ),
-                              trailing: const Icon(Icons.chevron_right),
+
+                              // ⭐ Add Review Button + Arrow
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.rate_review),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => AddReviewScreen(
+                                            restaurantName: r['name'],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const Icon(Icons.chevron_right),
+                                ],
+                              ),
+
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -341,8 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       name: r['name'],
                                       imageUrl: r['imageUrl'] ?? '',
                                       price: "\$" * (r['priceLevel'] ?? 1),
-                                      distance:
-                                          "${r['distance'] ?? 0.0} mi",
+                                      distance: "${r['distance'] ?? 0.0} mi",
                                       hours: r['hours'] ?? "N/A",
                                     ),
                                   ),
@@ -366,8 +388,9 @@ class _HomeScreenState extends State<HomeScreen> {
             heroTag: "ai_button",
             backgroundColor: Colors.deepPurple,
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("AI Assistant Coming Soon")),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MealMatcherScreen()),
               );
             },
             child: const Icon(Icons.auto_awesome),
