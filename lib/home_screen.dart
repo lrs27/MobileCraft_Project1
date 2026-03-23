@@ -87,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> loadRestaurants() async {
     final db = await DatabaseHelper.instance.database;
     final data = await db.query('restaurants');
+    print("📌 Restaurants loaded: ${data.length}");
 
     setState(() {
       restaurants = data;

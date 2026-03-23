@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
+import 'add_review_screen.dart';
 
 class RestaurantDetailsScreen extends StatelessWidget {
   final String name;
@@ -145,7 +146,12 @@ class RestaurantDetailsScreen extends StatelessWidget {
                     width: double.infinity,
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        // TODO: Add review logic
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddReviewScreen(restaurantName: name),
+                          ),
+                        );
                       },
                       icon: const Icon(Icons.rate_review),
                       label: const Text("Add Review"),

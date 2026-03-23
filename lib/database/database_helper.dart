@@ -52,7 +52,7 @@ Future _createDB(Database db, int version) async {
 CREATE TABLE meal_logs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   restaurantId INTEGER,
-  cost REAL NOT NULL,
+  price REAL NOT NULL,
   date TEXT NOT NULL,
   FOREIGN KEY (restaurantId) REFERENCES restaurants (id)
 )
@@ -78,6 +78,19 @@ CREATE TABLE reviews(
   text TEXT
 )
 ''');
+
+//Settings table
+await db.execute('''
+CREATE TABLE settings (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  weeklyBudget REAL DEFAULT 0
+)
+''');
+
+// Insert default settings row
+await db.insert('settings', {
+  'weeklyBudget': 0,
+});
 
 // ------------------ SEED RESTAURANTS ------------------
 
@@ -155,7 +168,161 @@ await db.insert('restaurants', {
   'lat': 33.755500,
   'lng': -84.387100,
 });
+
+await db.insert('restaurants', {
+  'name': "Moe's Southwest Grill",
+  'cuisine': 'Mexican',
+  'priceLevel': 1,
+  'distance': 0.1,
+  'hours': '10:30 AM - 9:00 PM',
+  'imageUrl': 'https://picsum.photos/400/506',
+  'phone': '404-000-0000',
+  'address': '66 Courtland St SE, Atlanta, GA 30303',
+  'description': 'Burritos, bowls, tacos, and queso.',
+  'rating': 4.0,
+  'lat': 33.754900,
+  'lng': -84.385700,
+});
+
+await db.insert('restaurants', {
+  'name': 'Tin Lizzy’s Cantina',
+  'cuisine': 'Mexican',
+  'priceLevel': 2,
+  'distance': 0.6,
+  'hours': '11:00 AM - 10:00 PM',
+  'imageUrl': 'https://picsum.photos/400/507',
+  'phone': '404-000-0000',
+  'address': '26 Park Pl NE, Atlanta, GA 30303',
+  'description': 'Tex-Mex tacos, skillets, and margaritas.',
+  'rating': 4.2,
+  'lat': 33.755700,
+  'lng': -84.387300,
+});
+
+await db.insert('restaurants', {
+  'name': 'Hungry AF Downtown',
+  'cuisine': 'American',
+  'priceLevel': 2,
+  'distance': 0.2,
+  'hours': '11:00 AM - 12:00 AM',
+  'imageUrl': 'https://picsum.photos/400/508',
+  'phone': '404-000-0000',
+  'address': '27 Piedmont Ave NE D1, Atlanta, GA 30303',
+  'description': 'Comfort food with huge portions.',
+  'rating': 4.7,
+  'lat': 33.755302,
+  'lng': -84.382053,
+});
+
+await db.insert('restaurants', {
+  'name': 'Metro Diner & Bar',
+  'cuisine': 'American',
+  'priceLevel': 1,
+  'distance': 0.5,
+  'hours': 'Open until 4 AM',
+  'imageUrl': 'https://picsum.photos/400/509',
+  'phone': '404-000-0000',
+  'address': '229 Peachtree St B17, Atlanta, GA 30303',
+  'description': 'Classic diner food with a full bar.',
+  'rating': 4.0,
+  'lat': 33.759767,
+  'lng': -84.386210,
+});
+
+await db.insert('restaurants', {
+  'name': 'Mr. Fries Man',
+  'cuisine': 'American',
+  'priceLevel': 1,
+  'distance': 0.1,
+  'hours': '10:00 AM - 5:00 AM',
+  'imageUrl': 'https://picsum.photos/400/510',
+  'phone': '404-254-4381',
+  'address': '30 Decatur St SE, Atlanta, GA 30303',
+  'description': 'Loaded fries with customizable toppings.',
+  'rating': 4.4,
+  'lat': 33.753858,
+  'lng': -84.388656,
+});
+
+await db.insert('restaurants', {
+  'name': 'Chick-fil-A',
+  'cuisine': 'American',
+  'priceLevel': 1,
+  'distance': 0.1,
+  'hours': '7:00 AM - 9:00 PM',
+  'imageUrl': 'https://picsum.photos/400/511',
+  'phone': '404-000-0000',
+  'address': '55 Gilmer St SE, Atlanta, GA 30303',
+  'description': 'Chicken sandwiches, nuggets, and waffle fries.',
+  'rating': 4.5,
+  'lat': 33.754650,
+  'lng': -84.385850,
+});
+
+await db.insert('restaurants', {
+  'name': 'Broad Street Café',
+  'cuisine': 'Cafe',
+  'priceLevel': 1,
+  'distance': 0.3,
+  'hours': '8:00 AM - 4:00 PM',
+  'imageUrl': 'https://picsum.photos/400/512',
+  'phone': '404-000-0000',
+  'address': '60 Broad St NW, Atlanta, GA 30303',
+  'description': 'Sandwiches, breakfast, and coffee.',
+  'rating': 4.1,
+  'lat': 33.755800,
+  'lng': -84.390300,
+});
+
+await db.insert('restaurants', {
+  'name': 'Gusto!',
+  'cuisine': 'American',
+  'priceLevel': 2,
+  'distance': 0.3,
+  'hours': '10:30 AM - 8:00 PM',
+  'imageUrl': 'https://picsum.photos/400/513',
+  'phone': '404-254-4197',
+  'address': '193 Piedmont Ave NE, Atlanta, GA 30303',
+  'description': 'Healthy bowls, wraps, and salads.',
+  'rating': 4.6,
+  'lat': 33.754900,
+  'lng': -84.387200,
+});
+
+await db.insert('restaurants', {
+  'name': 'Tin Drum Asian Kitchen',
+  'cuisine': 'Cafe',
+  'priceLevel': 2,
+  'distance': 0.4,
+  'hours': '11:00 AM - 9:00 PM',
+  'imageUrl': 'https://picsum.photos/400/514',
+  'phone': '404-000-0000',
+  'address': '75 Piedmont Ave NE, Atlanta, GA 30303',
+  'description': 'Asian fusion bowls, noodles, and stir fry.',
+  'rating': 4.2,
+  'lat': 33.756400,
+  'lng': -84.383700,
+});
+
+await db.insert('restaurants', {
+  'name': 'Gyro Bros',
+  'cuisine': 'American',
+  'priceLevel': 1,
+  'distance': 0.2,
+  'hours': '11:00 AM - 9:00 PM',
+  'imageUrl': 'https://picsum.photos/400/515',
+  'phone': '404-000-0000',
+  'address': '85 Piedmont Ave NE, Atlanta, GA 30303',
+  'description': 'Gyros, platters, falafel, and bowls.',
+  'rating': 4.3,
+  'lat': 33.756200,
+  'lng': -84.383900,
+});
+
 }
+
+
+
 
 
 

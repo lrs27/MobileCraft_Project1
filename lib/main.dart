@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'database/database_helper.dart';
 import 'onboarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize the database before app starts
+  // 🔥 TEMP FIX: Force delete old database
+  final dbPath = await getDatabasesPath();
+  await deleteDatabase(join(dbPath, 'campus_crave.db'));
+
+  // Recreate database
   await DatabaseHelper.instance.database;
 
   runApp(const CampusCraveApp());
