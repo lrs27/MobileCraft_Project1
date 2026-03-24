@@ -1,64 +1,66 @@
-CampusCrave
+#  CampusCrave
+
 CampusCrave is a Flutter mobile app designed for Georgia State University students to discover nearby restaurants, track weekly food spending, log meals, and leave reviews. The app focuses on simplicity, budgeting awareness, and a smooth campus‑friendly dining experience.
 
-📝 Project Summary
+---
+
+##  Project Summary
+
 CampusCrave helps students make smarter dining choices by combining restaurant discovery with personal budgeting tools. Users can browse restaurants around campus, view details, save favorites, log meals, and track how much they spend each week. A built‑in review system allows students to rate restaurants and read feedback from others. The app stores all data locally using SQLite, ensuring fast performance and offline access.
 
-🚀 Core Features
-Restaurant Browser – View restaurant details, pricing, distance, hours, and descriptions
+---
 
-Favorites – Save restaurants for quick access
+##  Core Features
 
-Meal Logging – Log meals with price and timestamp
+###  Restaurant Browser
+- View restaurant details, pricing, distance, hours, and descriptions
 
-Weekly Budget Tracking
+### Favorites
+- Save restaurants for quick access
 
-Set a weekly budget during onboarding
+###  Meal Logging
+- Log meals with price and timestamp
 
-Track spending with a progress bar
+###  Weekly Budget Tracking
+- Set a weekly budget during onboarding  
+- Track spending with a progress bar  
+- View remaining balance  
+- See all meals logged this week  
 
-View remaining balance
+###  Review System
+- Add reviews with star ratings  
+- View all reviews for a restaurant  
+- Swipe left to delete a review  
+- Floating “Add Review” button  
 
-See all meals logged this week
+###  Local Database (SQLite)
+- Fast, offline‑friendly data storage  
 
-Review System
+---
 
-Add reviews with star ratings
+##  Tech Stack
 
-View all reviews for a restaurant
+- Flutter (Dart)  
+- SQLite using `sqflite`  
+- Material Design 3 UI  
 
-Swipe left to delete a review
+---
 
-Floating “Add Review” button
+##  Key Screens
 
-Local Database (SQLite) – Fast, offline‑friendly data storage
+- **Onboarding Screen** – Set weekly budget + choose cuisines  
+- **Home Screen** – Restaurant list  
+- **Restaurant Details** – Info, reviews, favorites, log meal  
+- **Weekly Budget Screen** – Spending summary + meal history  
+- **Add Review Screen** – Write and save reviews  
+- **Reviews Screen** – View and delete reviews  
 
-🛠️ Tech Stack
-Flutter (Dart)
+---
 
-SQLite using sqflite
+##  Running the App
 
-Material Design 3 UI
-
-📂 Key Screens
-Onboarding Screen – Set weekly budget + choose cuisines
-
-Home Screen – Restaurant list
-
-Restaurant Details – Info, reviews, favorites, log meal
-
-Weekly Budget Screen – Spending summary + meal history
-
-Add Review Screen – Write and save reviews
-
-Reviews Screen – View and delete reviews
-
-▶️ Running the App
-Install Flutter
-
-Run flutter pub get
-
-Launch with:
-
-Code
-flutter run
+1. Install Flutter  
+2. Run dependencies:
+    flutter pub get
+3. Launch the app:
+    flutter run

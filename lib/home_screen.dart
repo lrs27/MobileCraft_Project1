@@ -4,7 +4,6 @@ import 'add_edit_restauraunt_screen.dart';
 import 'restaurant_details.dart';
 import 'favorites_screen.dart';
 import 'weekly_budget.dart';
-import 'add_review_screen.dart';
 import 'ai.dart';
 
 class HomeScreen extends StatefulWidget {
