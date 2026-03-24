@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
-import 'add_review_screen.dart';
+import 'view_reviews.dart';
 import 'log_meal.dart';
 
 class RestaurantDetailsScreen extends StatelessWidget {
@@ -159,7 +159,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
 
                   const SizedBox(height: 15),
 
-                  // Add Review
+                  // View Reviews
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
@@ -167,12 +167,12 @@ class RestaurantDetailsScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AddReviewScreen(restaurantName: name),
+                            builder: (context) => ReviewsScreen(restaurantName: name),
                           ),
                         );
                       },
                       icon: const Icon(Icons.rate_review),
-                      label: const Text("Add Review"),
+                      label: const Text("View Reviews"),
                     ),
                   ),
 

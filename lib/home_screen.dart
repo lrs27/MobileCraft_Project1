@@ -54,7 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> loadRestaurants() async {
     final db = await DatabaseHelper.instance.database;
     final data = await db.query('restaurants');
-    print("📌 Restaurants loaded: ${data.length}");
 
     setState(() {
       restaurants = data;
@@ -304,25 +303,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
 
                               // ⭐ Add Review Button + Arrow
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.rate_review),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => AddReviewScreen(
-                                            restaurantName: r['name'],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  const Icon(Icons.chevron_right),
-                                ],
-                              ),
+                              trailing:const Icon(Icons.chevron_right),
+                                
 
                               onTap: () {
                                 Navigator.push(
