@@ -62,6 +62,34 @@ flutter:
 
   assets:
     - lib/assets/images/
+    - lib/assets/images/saxbys.jpg
+    - lib/assets/images/naanstop.jpg
+    - lib/assets/images/botiwalla.jpg
+    - lib/assets/images/planet_bombay.jpg
+    - lib/assets/images/dunkin.jpg
+    - lib/assets/images/juliannas.jpg
+    - lib/assets/images/condesa.jpg
+    - lib/assets/images/ag_steakhouse.jpg
+    - lib/assets/images/amalfi.jpg
+    - lib/assets/images/broad.jpg
+    - lib/assets/images/chickfila.jpg
+    - lib/assets/images/cuts.jpg
+    - lib/assets/images/gusto.jpg
+    - lib/assets/images/gyro.jpg
+    - lib/assets/images/hibachi.jpg
+    - lib/assets/images/hungryaf.jpg
+    - lib/assets/images/metro.jpg
+    - lib/assets/images/moes.jpg
+    - lib/assets/images/mrfries.jpg
+    - lib/assets/images/panda_express.jpg
+    - lib/assets/images/pho.jpg
+    - lib/assets/images/polaris.jpg
+    - lib/assets/images/rays.jpg
+    - lib/assets/images/rosa.jpg
+    - lib/assets/images/saxbys.jpg
+    - lib/assets/images/tin_drum.jpg
+    - lib/assets/images/tin_lizzy.jpg
+    - lib/assets/images/whiteoak.jpg
 
 
   # To add assets to your application, add an assets section, like this:
