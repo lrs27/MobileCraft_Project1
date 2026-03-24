@@ -44,15 +44,15 @@ class _MealMatcherScreenState extends State<MealMatcherScreen> {
       case "Tired":
         return ["Cafe", "American"];
       case "Stressed":
-        return ["Asian", "Chinese"];
+        return ["Asian", "Chinese","Indian"];
       case "Happy":
-        return ["Pizza", "Mexican"];
+        return ["Pizza", "Mexican", "American"];
       case "In a rush":
-        return ["American", "Fast Food", "Pizza"];
+        return ["American", "Cafe", "Pizza"];
       case "Hungry AF":
-        return ["American", "Mexican", "Pizza"];
+        return ["American", "Mexican", "Pizza", "Chinese", "Indian"];
       case "Broke":
-        return ["Pizza", "Chinese", "Cafe"];
+        return ["Pizza", "Cafe", "American"];
       default:
         return [];
     }
@@ -88,35 +88,67 @@ class _MealMatcherScreenState extends State<MealMatcherScreen> {
 
   // ---------------- RUN MATCHING LOGIC ----------------
   Future<void> matchRestaurants() async {
-    if (selectedMood == null || selectedTime == null || selectedBudget == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select all options")),
-      );
-      return;
-    }
+  if (selectedMood == null || selectedTime == null || selectedBudget == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Please select all options")),
+    );
+    return;
+  }
 
-    setState(() => loading = true);
+  setState(() => loading = true);
 
-    final db = await DatabaseHelper.instance.database;
-    final allRestaurants = await db.query('restaurants');
+  final db = await DatabaseHelper.instance.database;
+  final allRestaurants = await db.query('restaurants');
 
-    final allowedCuisines = cuisinesForMood(selectedMood!);
-    final maxPrice = priceForBudget(selectedBudget!);
-    final maxDistance = distanceForTime(selectedTime!);
-
-    final filtered = allRestaurants.where((r) {
-      final cuisineMatch = allowedCuisines.contains(r['cuisine']);
-      final priceMatch = (r['priceLevel'] as int) <= maxPrice;
-      final distanceMatch = (r['distance'] as num).toDouble() <= maxDistance;
-
-      return cuisineMatch && priceMatch && distanceMatch;
-    }).toList();
-
+  if (allRestaurants.isEmpty) {
     setState(() {
-      results = filtered;
+      results = [];
       loading = false;
     });
+    return;
   }
+
+  final allowedCuisines = cuisinesForMood(selectedMood!);
+  final maxPrice = priceForBudget(selectedBudget!);
+  final maxDistance = distanceForTime(selectedTime!);
+
+  List<Map<String, dynamic>> filtered = [];
+
+  //  Strict: cuisine + price + distance
+  filtered = allRestaurants.where((r) {
+    final cuisineMatch = allowedCuisines.contains(r['cuisine']);
+    final priceMatch = (r['priceLevel'] as int) <= maxPrice;
+    final distanceMatch = (r['distance'] as num).toDouble() <= maxDistance;
+    return cuisineMatch && priceMatch && distanceMatch;
+  }).toList();
+
+  //  Relax distance if none
+  if (filtered.isEmpty) {
+    filtered = allRestaurants.where((r) {
+      final cuisineMatch = allowedCuisines.contains(r['cuisine']);
+      final priceMatch = (r['priceLevel'] as int) <= maxPrice;
+      return cuisineMatch && priceMatch;
+    }).toList();
+  }
+
+  //  Relax cuisine if still none (keep price)
+  if (filtered.isEmpty) {
+    filtered = allRestaurants.where((r) {
+      final priceMatch = (r['priceLevel'] as int) <= maxPrice;
+      return priceMatch;
+    }).toList();
+  }
+
+  //  Last resort: return all restaurants
+  if (filtered.isEmpty) {
+    filtered = List<Map<String, dynamic>>.from(allRestaurants);
+  }
+
+  setState(() {
+    results = filtered;
+    loading = false;
+  });
+}
 
   // ---------------- CHIP BUILDER ----------------
   Widget buildChipGroup({

@@ -9,51 +9,56 @@ class WeeklyBudgetScreen extends StatefulWidget {
 }
 
 class _WeeklyBudgetScreenState extends State<WeeklyBudgetScreen> {
-  double weeklyBudget = 50.0; // Default weekly budget
-  double totalSpent = 0.0;
-  List<Map<String, dynamic>> weeklyMeals = [];
+  double weeklyBudget = 0;
+  double weeklySpent = 0;
+  bool loading = true;
 
-  bool isLoading = true;
+  List<Map<String, dynamic>> weeklyMeals = [];
 
   @override
   void initState() {
     super.initState();
-    loadWeeklyData();
+    loadBudgetData();
   }
 
-  Future<void> loadWeeklyData() async {
+  Future<void> loadBudgetData() async {
     final db = await DatabaseHelper.instance.database;
 
-    // Get start of the week (Monday)
-    final now = DateTime.now();
-    final weekStart = now.subtract(Duration(days: now.weekday - 1));
-    final weekStartString = weekStart.toIso8601String();
+    // Load weekly budget
+    final settings = await db.query('settings', limit: 1);
+    weeklyBudget = (settings.first['weeklyBudget'] as num).toDouble();
 
-    // Query meals logged this week
-    final meals = await db.rawQuery('''
-      SELECT meal_logs.*, restaurants.name AS restaurantName
+    // Load meals from last 7 days
+    final now = DateTime.now();
+    final weekAgo = now.subtract(const Duration(days: 7)).toIso8601String();
+
+    final rows = await db.rawQuery('''
+      SELECT meal_logs.price, meal_logs.date, restaurants.name
       FROM meal_logs
       JOIN restaurants ON meal_logs.restaurantId = restaurants.id
       WHERE meal_logs.date >= ?
       ORDER BY meal_logs.date DESC
-    ''', [weekStartString]);
+    ''', [weekAgo]);
 
-    double spent = 0.0;
-    for (var m in meals) {
-      spent += (m['price'] as num).toDouble();
+    double total = 0;
+    for (final r in rows) {
+      total += (r['price'] as num).toDouble();
     }
 
     setState(() {
-      weeklyMeals = meals;
-      totalSpent = spent;
-      isLoading = false;
+      weeklySpent = total;
+      weeklyMeals = rows;
+      loading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    double remaining = weeklyBudget - totalSpent;
-    double progress = (totalSpent / weeklyBudget).clamp(0.0, 1.0);
+    final remaining = weeklyBudget - weeklySpent;
+
+    final progress = weeklyBudget == 0
+        ? 0.0
+        : (weeklySpent / weeklyBudget).clamp(0.0, 1.0).toDouble();
 
     return Scaffold(
       appBar: AppBar(
@@ -61,106 +66,78 @@ class _WeeklyBudgetScreenState extends State<WeeklyBudgetScreen> {
         centerTitle: true,
       ),
 
-      body: isLoading
+      body: loading
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
+          : Padding(
               padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  // ------------------ BUDGET INPUT ------------------
-                  const Text(
-                    "Set Weekly Budget",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Slider(
-                          value: weeklyBudget,
-                          min: 20,
-                          max: 200,
-                          divisions: 18,
-                          label: "\$${weeklyBudget.toStringAsFixed(0)}",
-                          onChanged: (value) {
-                            setState(() {
-                              weeklyBudget = value;
-                            });
-                          },
-                        ),
-                      ),
-                      Text(
-                        "\$${weeklyBudget.toStringAsFixed(0)}",
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // ------------------ PROGRESS BAR ------------------
-                  const Text(
-                    "This Week's Spending",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-
-                  LinearProgressIndicator(
-                    value: progress,
-                    minHeight: 12,
-                    backgroundColor: Colors.grey.shade800,
-                    color: progress >= 1 ? Colors.red : Colors.green,
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  Text(
-                    "Spent: \$${totalSpent.toStringAsFixed(2)} / \$${weeklyBudget.toStringAsFixed(0)}",
-                    style: const TextStyle(fontSize: 16),
-                  ),
-
-                  Text(
-                    remaining >= 0
-                        ? "Remaining: \$${remaining.toStringAsFixed(2)}"
-                        : "Over budget by \$${remaining.abs().toStringAsFixed(2)}",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: remaining >= 0 ? Colors.green : Colors.red,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Weekly Budget: \$${weeklyBudget.toStringAsFixed(2)}",
+                      style: const TextStyle(fontSize: 20),
                     ),
-                  ),
+                    const SizedBox(height: 10),
 
-                  const SizedBox(height: 30),
+                    Text(
+                      "Spent: \$${weeklySpent.toStringAsFixed(2)}",
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(height: 10),
 
-                  // ------------------ MEAL LOG LIST ------------------
-                  const Text(
-                    "Meals Logged This Week",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
+                    Text(
+                      "Remaining: \$${remaining.toStringAsFixed(2)}",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: remaining < 0 ? Colors.red : Colors.green,
+                      ),
+                    ),
 
-                  weeklyMeals.isEmpty
-                      ? const Text(
-                          "No meals logged yet.",
-                          style: TextStyle(fontSize: 16),
-                        )
-                      : Column(
-                          children: weeklyMeals.map((meal) {
-                            return Card(
-                              margin: const EdgeInsets.symmetric(vertical: 8),
-                              child: ListTile(
-                                title: Text(meal['restaurantName']),
-                                subtitle: Text(
-                                  "Spent \$${meal['price']} on ${meal['date']}",
-                                ),
-                                trailing: const Icon(Icons.receipt_long),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                ],
+                    const SizedBox(height: 20),
+
+                    LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: Colors.grey.shade800,
+                      color: remaining < 0 ? Colors.red : Colors.green,
+                      minHeight: 12,
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    Text(
+                      "Meals Logged This Week (${weeklyMeals.length})",
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    if (weeklyMeals.isEmpty)
+                      const Text("No meals logged yet.")
+                    else
+                      ...weeklyMeals.map((meal) {
+                        final price = (meal['price'] as num).toDouble();
+                        final date = DateTime.parse(meal['date']);
+                        final formattedDate =
+                            "${date.month}/${date.day} at ${date.hour}:${date.minute.toString().padLeft(2, '0')}";
+
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(meal['name']),
+                          subtitle: Text("Logged on $formattedDate"),
+                          trailing: Text(
+                            "\$${price.toStringAsFixed(2)}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                  ],
+                ),
               ),
             ),
     );

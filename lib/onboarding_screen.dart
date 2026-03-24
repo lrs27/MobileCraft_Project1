@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'database/database_helper.dart';
 import 'home_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     'Mexican',
     'American',
     'Indian',
-    'Cafe', 
+    'Cafe',
   ];
 
   List<String> selectedCuisines = [];
@@ -32,7 +33,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     });
   }
 
-  void goToHome() {
+  Future<void> goToHome() async {
+    final db = await DatabaseHelper.instance.database;
+
+    // Convert input to double
+    final budgetText = budgetController.text.trim();
+    final budget = double.tryParse(budgetText) ?? 0;
+
+    // Update the settings table
+    await db.update(
+      'settings',
+      {'weeklyBudget': budget},
+      where: 'id = ?',
+      whereArgs: [1], // default settings row
+    );
+
+    // Navigate to home
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -54,6 +70,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               "Set Weekly Budget",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+
             TextField(
               controller: budgetController,
               keyboardType: TextInputType.number,
@@ -61,11 +78,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 hintText: "Enter budget",
               ),
             ),
+
             const SizedBox(height: 20),
+
             const Text(
               "Select Favorite Cuisines",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+
             Wrap(
               spacing: 8,
               children: cuisines.map((cuisine) {
@@ -77,7 +97,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 );
               }).toList(),
             ),
+
             const Spacer(),
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

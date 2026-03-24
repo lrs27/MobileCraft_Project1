@@ -319,11 +319,189 @@ await db.insert('restaurants', {
   'lng': -84.383900,
 });
 
+// 🔥 EXPENSIVE RESTAURANTS NEAR GSU
+
+await db.insert('restaurants', {
+  'name': 'AG Steakhouse (Ritz-Carlton)',
+  'cuisine': 'Steakhouse',
+  'priceLevel': 3,
+  'distance': 0.6,
+  'hours': '5:00 PM - 10:00 PM',
+  'imageUrl': 'https://picsum.photos/400/601',
+  'phone': '404-221-6550',
+  'address': '181 Peachtree St NE, Atlanta, GA 30303',
+  'description': 'Upscale steakhouse inside the Ritz-Carlton featuring premium cuts and luxury dining.',
+  'rating': 4.7,
+  'lat': 33.759800,
+  'lng': -84.387900,
+});
+
+await db.insert('restaurants', {
+  'name': 'White Oak Kitchen & Cocktails',
+  'cuisine': 'Southern',
+  'priceLevel': 3,
+  'distance': 0.5,
+  'hours': '11:00 AM - 10:00 PM',
+  'imageUrl': 'https://picsum.photos/400/602',
+  'phone': '404-524-7200',
+  'address': '270 Peachtree St NW, Atlanta, GA 30303',
+  'description': 'Modern Southern cuisine with craft cocktails in a stylish, upscale dining room.',
+  'rating': 4.6,
+  'lat': 33.760200,
+  'lng': -84.387300,
+});
+
+await db.insert('restaurants', {
+  'name': 'Ray’s in the City',
+  'cuisine': 'Seafood',
+  'priceLevel': 3,
+  'distance': 0.7,
+  'hours': '11:00 AM - 10:00 PM',
+  'imageUrl': 'https://picsum.photos/400/603',
+  'phone': '404-524-9224',
+  'address': '240 Peachtree St NW, Atlanta, GA 30303',
+  'description': 'High-end seafood restaurant known for fresh fish, sushi, and elegant ambiance.',
+  'rating': 4.5,
+  'lat': 33.760500,
+  'lng': -84.387600,
+});
+
+await db.insert('restaurants', {
+  'name': 'Cuts Steakhouse',
+  'cuisine': 'Steakhouse',
+  'priceLevel': 3,
+  'distance': 0.4,
+  'hours': '4:00 PM - 10:00 PM',
+  'imageUrl': 'https://picsum.photos/400/604',
+  'phone': '404-525-3399',
+  'address': '60 Andrew Young International Blvd NE, Atlanta, GA 30303',
+  'description': 'Upscale steakhouse offering premium cuts, seafood, and fine dining near the GWCC.',
+  'rating': 4.4,
+  'lat': 33.759200,
+  'lng': -84.387100,
+});
+
+await db.insert('restaurants', {
+  'name': 'Polaris (Hyatt Regency)',
+  'cuisine': 'American',
+  'priceLevel': 3,
+  'distance': 0.8,
+  'hours': '5:00 PM - 11:00 PM',
+  'imageUrl': 'https://picsum.photos/400/605',
+  'phone': '404-460-6425',
+  'address': '265 Peachtree St NE, Atlanta, GA 30303',
+  'description': 'Iconic rotating restaurant with skyline views and upscale American dishes.',
+  'rating': 4.6,
+  'lat': 33.760900,
+  'lng': -84.386900,
+});
+
+await db.insert('restaurants', {
+  'name': "Saxby's (GSU)",
+  'cuisine': 'Cafe',
+  'priceLevel': 1,
+  'distance': 0.1,
+  'hours': '7:00 AM - 7:00 PM',
+  'imageUrl': 'https://picsum.photos/400/804',
+  'phone': '404-413-9500',
+  'address': '66 Courtland St SE, Atlanta, GA 30303',
+  'description': 'Student-run café inside GSU offering coffee, sandwiches, smoothies, and study-friendly vibes.',
+  'rating': 4.5,
+  'lat': 33.753800,
+  'lng': -84.385600,
+});
+
+await db.insert('restaurants', {
+  'name': 'NaanStop',
+  'cuisine': 'Indian',
+  'priceLevel': 2,
+  'distance': 0.4,
+  'hours': '11:00 AM - 9:00 PM',
+  'imageUrl': 'https://picsum.photos/400/701',
+  'phone': '404-343-1808',
+  'address': '3420 Piedmont Rd NE, Atlanta, GA 30305',
+  'description': 'Fast-casual Indian bowls, naan wraps, and classic curries with a modern twist.',
+  'rating': 4.4,
+  'lat': 33.760200,
+  'lng': -84.387800,
+});
+
+await db.insert('restaurants', {
+  'name': 'Botiwalla',
+  'cuisine': 'Indian',
+  'priceLevel': 2,
+  'distance': 0.9,
+  'hours': '11:00 AM - 10:00 PM',
+  'imageUrl': 'https://picsum.photos/400/702',
+  'phone': '404-343-1808',
+  'address': '675 Ponce De Leon Ave NE, Atlanta, GA 30308',
+  'description': 'Indian street food inspired by Irani cafés — kebabs, rolls, and masala fries.',
+  'rating': 4.5,
+  'lat': 33.772100,
+  'lng': -84.365800,
+});
+
+await db.insert('restaurants', {
+  'name': 'Planet Bombay',
+  'cuisine': 'Indian',
+  'priceLevel': 2,
+  'distance': 0.8,
+  'hours': '11:00 AM - 10:00 PM',
+  'imageUrl': 'https://picsum.photos/400/703',
+  'phone': '404-688-0005',
+  'address': '451 Moreland Ave NE, Atlanta, GA 30307',
+  'description': 'Traditional Indian curries, biryanis, and tandoori dishes served in a cozy setting.',
+  'rating': 4.3,
+  'lat': 33.772900,
+  'lng': -84.349900,
+});
+
+await db.insert('restaurants', {
+  'name': 'Dunkin Donuts',
+  'cuisine': 'Cafe',
+  'priceLevel': 1,
+  'distance': 0.1,
+  'hours': '6:00 AM - 8:00 PM',
+  'imageUrl': 'https://picsum.photos/400/801',
+  'phone': '404-555-1234',
+  'address': '66 Courtland St SE, Atlanta, GA 30303',
+  'description': 'Popular campus spot for coffee, donuts, and breakfast sandwiches.',
+  'rating': 4.0,
+  'lat': 33.753900,
+  'lng': -84.385700,
+});
+
+await db.insert('restaurants', {
+  'name': 'Julianna’s Coffee & Crepes',
+  'cuisine': 'Cafe',
+  'priceLevel': 2,
+  'distance': 0.6,
+  'hours': '8:00 AM - 4:00 PM',
+  'imageUrl': 'https://picsum.photos/400/802',
+  'phone': '404-883-3406',
+  'address': '775 Lake Ave NE, Atlanta, GA 30307',
+  'description': 'European-style café serving sweet and savory crepes with artisan coffee.',
+  'rating': 4.7,
+  'lat': 33.767900,
+  'lng': -84.357900,
+});
+
+await db.insert('restaurants', {
+  'name': 'Condesa Coffee',
+  'cuisine': 'Cafe',
+  'priceLevel': 2,
+  'distance': 0.7,
+  'hours': '7:00 AM - 6:00 PM',
+  'imageUrl': 'https://picsum.photos/400/803',
+  'phone': '404-524-5054',
+  'address': '480 John Wesley Dobbs Ave NE, Atlanta, GA 30312',
+  'description': 'Trendy café offering espresso drinks, pastries, and light bites near Old Fourth Ward.',
+  'rating': 4.6,
+  'lat': 33.759900,
+  'lng': -84.372900,
+});
+
 }
-
-
-
-
 
 
 Future close() async {

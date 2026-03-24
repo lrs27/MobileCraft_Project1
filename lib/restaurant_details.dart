@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
 import 'add_review_screen.dart';
+import 'log_meal.dart';
 
 class RestaurantDetailsScreen extends StatelessWidget {
   final String name;
@@ -130,26 +131,14 @@ class RestaurantDetailsScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Description",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    description,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              ],
             ),
+          ),
 
 
             // ------------------ BUTTONS ------------------
@@ -188,18 +177,39 @@ class RestaurantDetailsScreen extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 15),
-
                   // Log Meal
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        // TODO: Log meal logic
-                      },
-                      icon: const Icon(Icons.receipt_long),
-                      label: const Text("Log Meal"),
-                    ),
-                  ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () async {
+                          final db = await DatabaseHelper.instance.database;
+
+                          // Use `name` (constructor field), not `widget.name`
+                          final result = await db.query(
+                            'restaurants',
+                            where: 'name = ?',
+                            whereArgs: [name],
+                            limit: 1,
+                          );
+
+                          if (result.isEmpty) return;
+
+                          final restaurantId = result.first['id'] as int;
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => LogMealScreen(
+                                restaurantId: restaurantId,
+                                restaurantName: name,
+                              ),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.receipt_long),
+                        label: const Text("Log Meal"),
+                      ),
+                    ),               
                 ],
               ),
             ),

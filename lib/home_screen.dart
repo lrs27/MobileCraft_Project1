@@ -46,42 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> loadAllData() async {
-    await loadWeeklyBudget();
-    await loadWeeklySpending();
     await loadRestaurants();
   }
 
-  // ------------------ LOAD WEEKLY BUDGET ------------------
-  Future<void> loadWeeklyBudget() async {
-    final db = await DatabaseHelper.instance.database;
-
-    final settings = await db.query('settings', limit: 1);
-
-    if (settings.isNotEmpty) {
-      weeklyBudget = (settings.first['weeklyBudget'] as num).toDouble();
-    }
-  }
-
-  // ------------------ LOAD WEEKLY SPENDING ------------------
-  Future<void> loadWeeklySpending() async {
-    final db = await DatabaseHelper.instance.database;
-
-    final now = DateTime.now();
-    final weekStart = now.subtract(Duration(days: now.weekday - 1));
-    final weekStartString = weekStart.toIso8601String();
-
-    final logs = await db.rawQuery('''
-      SELECT price FROM meal_logs
-      WHERE date >= ?
-    ''', [weekStartString]);
-
-    double total = 0.0;
-    for (var log in logs) {
-      total += (log['price'] as num).toDouble();
-    }
-
-    weeklySpent = total;
-  }
 
   // ------------------ LOAD RESTAURANTS ------------------
   Future<void> loadRestaurants() async {
@@ -367,6 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       price: "\$" * (r['priceLevel'] ?? 1),
                                       distance: "${r['distance'] ?? 0.0} mi",
                                       hours: r['hours'] ?? "N/A",
+                                      description: r['description'] ?? "No description available.",
                                     ),
                                   ),
                                 );
