@@ -251,6 +251,7 @@ class _MealMatcherScreenState extends State<MealMatcherScreen> {
                                 price: "\$" * (r['priceLevel'] ?? 1),
                                 distance: "${r['distance']} mi",
                                 hours: r['hours'] ?? "N/A",
+                                description: r['description'] ?? "No description available.",
                               ),
                             ),
                           );

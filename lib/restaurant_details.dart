@@ -8,6 +8,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
   final String price;
   final String distance;
   final String hours;
+  final String description;
 
   const RestaurantDetailsScreen({
     super.key,
@@ -16,6 +17,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
     required this.price,
     required this.distance,
     required this.hours,
+    required this.description,
   });
 
   Future<void> addToFavorites(BuildContext context) async {
@@ -117,11 +119,38 @@ class RestaurantDetailsScreen extends StatelessWidget {
                       Text("Hours: $hours"),
                     ],
                   ),
+                  const SizedBox(height: 12),
+                  Text(
+                    description,
+                    style: const TextStyle(fontSize: 16),
+                  ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Description",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    description,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+
 
             // ------------------ BUTTONS ------------------
             Padding(

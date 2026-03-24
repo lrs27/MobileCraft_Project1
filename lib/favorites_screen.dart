@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
-import 'add_edit_restauraunt_screen.dart';
+import 'restaurant_details.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -34,6 +34,41 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     });
   }
 
+  // ⭐ Remove favorite + show UNDO
+  Future<bool> _removeFavoriteWithUndo(int restaurantId) async {
+    final db = await DatabaseHelper.instance.database;
+
+    // Remove from favorites
+    await db.delete(
+      'favorites',
+      where: 'restaurantId = ?',
+      whereArgs: [restaurantId],
+    );
+
+    // Refresh UI
+    await loadFavorites();
+
+    // Snackbar with UNDO
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text("Removed from favorites"),
+        action: SnackBarAction(
+          label: "UNDO",
+          onPressed: () async {
+            await db.insert('favorites', {
+              'restaurantId': restaurantId,
+              'emoji': null,
+              'note': null,
+            });
+            await loadFavorites();
+          },
+        ),
+      ),
+    );
+
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,48 +91,68 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   itemBuilder: (context, index) {
                     final r = favorites[index];
 
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      child: ListTile(
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Image.network(
-                            r['imageUrl'] ?? '',
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, _, _) => Container(
+                    return Dismissible(
+                      key: ValueKey(r['id']),
+                      direction: DismissDirection.endToStart,
+
+                      // Red delete background
+                      background: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+
+                      // Handle delete + undo
+                      confirmDismiss: (_) async {
+                        return await _removeFavoriteWithUndo(r['id']);
+                      },
+
+                      child: Card(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        child: ListTile(
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Image.network(
+                              r['imageUrl'] ?? '',
                               width: 60,
                               height: 60,
-                              color: Colors.grey.shade800,
-                              child: const Icon(Icons.restaurant),
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Container(
+                                width: 60,
+                                height: 60,
+                                color: Colors.grey.shade800,
+                                child: const Icon(Icons.restaurant),
+                              ),
                             ),
                           ),
+
+                          title: Text(r['name']),
+                          subtitle: Text(r['cuisine']),
+
+                          // ⭐ TAP → Go to Restaurant Details
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => RestaurantDetailsScreen(
+                                  name: r['name'],
+                                  imageUrl: r['imageUrl'] ?? '',
+                                  price: "\$" * (r['priceLevel'] ?? 1),
+                                  distance: "${r['distance'] ?? 0.0} mi",
+                                  hours: r['hours'] ?? "N/A",
+                                  description:
+                                      r['description'] ?? "No description available",
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                        title: Text(r['name']),
-                        subtitle: Text(r['cuisine']),
                       ),
                     );
                   },
                 ),
-
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const AddEditRestaurantScreen(),
-            ),
-          );
-
-          if (result == true) {
-            loadFavorites();
-          }
-        },
-        icon: const Icon(Icons.add),
-        label: const Text("Add Restaurant"),
-      ),
     );
   }
 }
