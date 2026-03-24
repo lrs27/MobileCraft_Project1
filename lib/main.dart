@@ -7,7 +7,7 @@ import 'onboarding_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 🔥 TEMP FIX: Force delete old database
+  //  TEMP FIX: Force delete old database
   final dbPath = await getDatabasesPath();
   await deleteDatabase(join(dbPath, 'campus_crave.db'));
 

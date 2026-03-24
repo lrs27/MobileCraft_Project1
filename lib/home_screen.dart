@@ -301,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 "${r['cuisine']} • ${"\$" * (r['priceLevel'] ?? 1)}",
                               ),
 
-                              // ⭐ Add Review Button + Arrow
+                              //  Add Review Button + Arrow
                               trailing:const Icon(Icons.chevron_right),
                                 
 

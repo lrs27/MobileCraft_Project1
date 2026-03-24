@@ -34,7 +34,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     });
   }
 
-  // ⭐ Remove favorite + show UNDO
+  //  Remove favorite + show UNDO
   Future<bool> _removeFavoriteWithUndo(int restaurantId) async {
     final db = await DatabaseHelper.instance.database;
 
@@ -131,7 +131,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           title: Text(r['name']),
                           subtitle: Text(r['cuisine']),
 
-                          // ⭐ TAP → Go to Restaurant Details
+                          //  TAP → Go to Restaurant Details
                           onTap: () {
                             Navigator.push(
                               context,

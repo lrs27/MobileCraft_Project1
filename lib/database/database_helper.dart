@@ -319,7 +319,7 @@ await db.insert('restaurants', {
   'lng': -84.383900,
 });
 
-// 🔥 EXPENSIVE RESTAURANTS NEAR GSU
+
 
 await db.insert('restaurants', {
   'name': 'AG Steakhouse (Ritz-Carlton)',
