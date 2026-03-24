@@ -284,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               leading: ClipRRect(
                                 borderRadius: BorderRadius.circular(6),
                                 child: Image.network(
-                                  r['imageUrl'] ?? '',
+                                  r['image'] ?? '',
                                   width: 60,
                                   height: 60,
                                   fit: BoxFit.cover,
@@ -311,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   MaterialPageRoute(
                                     builder: (_) => RestaurantDetailsScreen(
                                       name: r['name'],
-                                      imageUrl: r['imageUrl'] ?? '',
+                                      image: r['image'] ?? '',
                                       price: "\$" * (r['priceLevel'] ?? 1),
                                       distance: "${r['distance'] ?? 0.0} mi",
                                       hours: r['hours'] ?? "N/A",

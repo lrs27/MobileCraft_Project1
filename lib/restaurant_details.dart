@@ -5,7 +5,7 @@ import 'log_meal.dart';
 
 class RestaurantDetailsScreen extends StatelessWidget {
   final String name;
-  final String imageUrl;
+  final String image;
   final String price;
   final String distance;
   final String hours;
@@ -14,7 +14,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
   const RestaurantDetailsScreen({
     super.key,
     required this.name,
-    required this.imageUrl,
+    required this.image,
     required this.price,
     required this.distance,
     required this.hours,
@@ -70,7 +70,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
             AspectRatio(
               aspectRatio: 16 / 9,
               child: Image.network(
-                imageUrl,
+                image,
                 fit: BoxFit.cover,
                 errorBuilder: (_, _, _) => Container(
                   color: Colors.grey.shade800,
